@@ -34,10 +34,14 @@ char** procesarLinea(char* linea,char** lista){
 
 
 int main(int argc, char const *argv[]){
-    int* pipePH = (int*)malloc(sizeof(int)*2); // Pipe Padre --> Hijo
-    int* pipeHP = (int*)malloc(sizeof(int)*2); // Pipe Hijo --> Padre
-    int pid, radio;
+    int pid, radio, numeroDiscos, ppid;
+    numeroDiscos = 2;
+    int* pids = (int*)malloc(sizeof(int)*numeroDiscos);
 
+    int** arregloPipes = (int**)malloc(sizeof(int*)*numeroDiscos*2)
+    for(int i=0 ; i<numeroDiscos*2; i++){
+        arregloPipes[i] = (int*)malloc(sizeof(int)*2)
+    }
     
     FILE* archivo;
     char buffer[100];
@@ -49,6 +53,19 @@ int main(int argc, char const *argv[]){
     for(int i=0;i<5;i++){
         lista[i]= (char*)malloc(sizeof(char)*100);
     }    
+
+
+    ppid = getpid();
+
+    for(int i=0; i<numeroDiscos; i++){
+        if(ppid == getpid()){
+            pid = fork()
+            
+        }
+    }
+
+
+
     archivo = fopen("prueba.csv", "r");
 
     while(!feof(archivo)){
@@ -69,21 +86,8 @@ int main(int argc, char const *argv[]){
     
         }
         //procesado de linea
-        lista=procesarLinea(linea,lista);ESCRITURA
+        lista=procesarLinea(linea,lista);
     
-        pid = fork();
-
-        if(pid > 0){ // Proceso Padre
-            close(pipePH[LECTURA]);
-            write(pipePH[ESCRITURA],lista[0], sizeof(char)*100));
-
-            printf("EL PADRE ESCRIBIO");
-        }
-        else{
-            close(pipePH[ESCRITURA]);
-            read(pipePH[LECTURA],stringRecibido, sizeof(char)*100]);
-        
-        }
     
 
     }
