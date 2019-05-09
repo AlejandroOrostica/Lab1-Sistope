@@ -8,7 +8,26 @@
 
 #define LECTURA 0
 #define ESCRITURA 1
+void crearSalida(){
+    FILE* salida;
+    salida = fopen("propiedades.txt", "w");
+    for(int i=0;i<5;i++){
+        char cadena1[] = "Disco :\n";
+        fwrite( cadena1, sizeof(char), strlen(cadena1), salida );
+        char cadena2[] = "Media Real:\n";
+        fwrite( cadena2, sizeof(char), strlen(cadena2), salida );
+        char cadena3[] = "Media Imaginaria:\n";
+        fwrite( cadena3, sizeof(char), strlen(cadena3), salida );
+        char cadena4[] = "Ruido Total:\n";
+        fwrite( cadena4, sizeof(char), strlen(cadena4), salida );
+    }
 
+
+
+
+    fclose(salida);
+    
+}
 
 char** procesarLinea(char* linea,char** lista){
 
@@ -107,7 +126,16 @@ int main(int argc, char const *argv[]){
             //procesado de linea
             lista=procesarLinea(linea,lista);
             distancia = calcularDistancia(lista);
+            for(int l=0;l<numeroDiscos;l++){
+                float min= radio*l;
+                float max= (radio*(l+1)); 
+                
+                if(distancia<max && distancia>=min){
+                    printf("este dato va al disco %i\n",l+1);
+                    break;
+                }
 
+            }
     
     
 
