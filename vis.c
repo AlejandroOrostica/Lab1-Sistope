@@ -51,8 +51,30 @@ float calcularRuido(float* ruido){
 
 int main(int argc, char const *argv[])
 {
+    int i=0
+    float potencia =0.0;
+    float mediaImaginaria =0.0;
+    float mediaReal =0.0;
+    float ruido=0.0;
+    float reales=0.0;
+    float imaginarios=0.0;
+    float total=0.0;
     char string[100];
     read(atoi(argv[2]),string, 100);
+    while(strcmp(string,"FIN" )!=0){
+        i++;
+        //ruido+=ruidoenargv;
+        //imaginarios+=imaginariosargv;
+        //reales+=realesargv;
+    }
+    if(strcmp(string,"FIN" )==0){
+        mediaReal= calcularMediaReal(reales,total);
+        mediaImaginaria= calcularMediaImaginaria(imaginarios,total);
+        potencia=calcularPotencia(reales,imaginarios);
+        //enviar datos por el pipe al padre;
+
+    }
+    printf("Los numeros son %f %f %f %f\n",mediaReal,mediaImaginaria,potencia,ruido);
     printf("Soy el hijito y esto lei: %s\n", string);
     return 0;
 }
