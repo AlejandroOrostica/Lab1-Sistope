@@ -63,6 +63,17 @@ int main(int argc, char const *argv[]){
 
 
     ppid = getpid();
+    int* pipes =(int*)malloc(sizeof(int)*2);
+    pipe(pipes);
+    char *canalWrite = malloc(sizeof(char)*100);
+    char *canalRead = malloc(sizeof(char)*100);
+    sprintf(canalWrite,"%i",pipes[ESCRITURA]);
+    sprintf(canalRead,"%i",pipes[LECTURA]);
+    char* string2 = (char *)malloc(10*sizeof(char));
+    string2[0] = '\0';
+    strcpy(string2, "hola");
+    write(pipes[ESCRITURA], string2, sizeof(char)*100);
+    char* array[] = {"/bin/vis",canalWrite,canalRead,NULL};
 
     for(int i=0; i<numeroDiscos; i++){
         if(ppid == getpid()){
@@ -102,18 +113,16 @@ int main(int argc, char const *argv[]){
 
         }
         printf("Soy el papi \n");
-        int* pipes =(int*)malloc(sizeof(int)*2);
-        pipe(pipes);
-        close(pipes[LECTURA]);
-        char* string2 = (char *)malloc(10*sizeof(char));
-        string2[0] = '\0';
-        strcpy(string2, "hola");
-        write(pipes[ESCRITURA], string2, sizeof(char)*10);
+        
+        
         printf("Según yo mandé: %s", string2);
         fclose(archivo);
+        
     }
     else{
-        //execve("vis.c");
+
+        
+        execv("/bin/vis.c",array);
         printf("Soy un hijito  \n");
     }
 

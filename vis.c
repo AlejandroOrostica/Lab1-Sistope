@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
-
+/*
 float calcularMediaReal(float* numerosReales, int n ){
     int i;
     float total = 0.0; 
@@ -42,11 +42,13 @@ float calcularRuido(float* ruido){
     }
 }
 
-
+*/
 
 
 int main(int argc, char const *argv[])
 {
-    /* code */
+    char string[100];
+    read(atoi(argv[2]),string, 100);
+    printf("Soy el hijito y esto lei: %s\n", string);
     return 0;
 }
