@@ -129,8 +129,11 @@ int main(int argc, char const *argv[]){
             for(int l=0;l<numeroDiscos;l++){
                 float min= radio*l;
                 float max= (radio*(l+1)); 
-                
-                if(distancia<max && distancia>=min){
+                if(l==numeroDiscos-1){
+                    printf("este dato va al disco %i\n",l+1);
+                    break;
+                }
+                else if(distancia<max && distancia>=min){
                     printf("este dato va al disco %i\n",l+1);
                     break;
                 }
