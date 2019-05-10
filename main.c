@@ -61,8 +61,8 @@ float calcularDistancia(char** lista){
 int main(int argc, char const *argv[]){
     int pid, radio, numeroDiscos, ppid;
     float distancia;
-    char* array;
-    numeroDiscos = 2;
+    
+    numeroDiscos = 3;
     radio = 150;
     int* pids = (int*)malloc(sizeof(int)*numeroDiscos);
 
@@ -79,20 +79,33 @@ int main(int argc, char const *argv[]){
     for(int i=0;i<5;i++){
         lista[i]= (char*)malloc(sizeof(char)*100);
     }    
-
-
+    ppid=getpid();
+    
     for(int i=0; i<numeroDiscos; i++){
+        
         if(ppid == getpid()){
+            
             pid = fork();
             if(pid == 0){
                 pids[i] = getpid();
+                char *canalWrite = malloc(sizeof(char)*100);
+                char *canalRead = malloc(sizeof(char)*100);
+                sprintf(canalWrite,"%i",arregloPipes[2*i+1][ESCRITURA]);
+                sprintf(canalRead,"%i",arregloPipes[2*i][LECTURA]);
+                
+                char * array[] = {"./vis",canalWrite,canalRead,NULL};
+                execv("./vis",array);
+                printf("aca llegue\n");
+                
+
+
+
+
             }
         }
-        else{
 
-        }
     }
-
+    
     if(ppid == getpid()){
         archivo = fopen("prueba.csv", "r");
 
@@ -121,41 +134,16 @@ int main(int argc, char const *argv[]){
                 float min= radio*l;
                 float max= (radio*(l+1)); 
                 if(l==numeroDiscos-1){
-                    char *canalWrite = malloc(sizeof(char)*100);
-                    char *canalRead = malloc(sizeof(char)*100);
-                    char* pidHijo = malloc(sizeof(char)*10);
-                    sprintf(pidHijo, "%i", pids[l]);
-                    write(arregloPipes[2*l][ESCRITURA], lista[2], sizeof(char)*100);
-                    write(arregloPipes[2*l][ESCRITURA], lista[3], sizeof(char)*100);
-                    write(arregloPipes[2*l][ESCRITURA], lista[4], sizeof(char)*100);
-                    write(arregloPipes[2*l][ESCRITURA],pidHijo , sizeof(char)*100);
-                    sprintf(canalWrite,"%i",arregloPipes[2*l][ESCRITURA]);
-                    sprintf(canalRead,"%i",arregloPipes[2*l][ESCRITURA]);
-                    array = {"/bin/vis",canalWrite,canalRead,NULL};
-                    free(canalWrite);
-                    free(canalRead);
-                    free(pidHijo);
+                    
+                    write(arregloPipes[2*l ][ESCRITURA], lista[2], sizeof(char)*100);
 
                     printf("este dato va al disco %i\n",l+1);
 
                     break;
                 }
                 else if(distancia<max && distancia>=min){
-                    char *canalWrite = malloc(sizeof(char)*100);
-                    char *canalRead = malloc(sizeof(char)*100);
-                    char* pidHijo = malloc(sizeof(char)*10);
-                    sprintf(pidHijo, "%i", pids[l]);
                     write(arregloPipes[2*l +1][ESCRITURA], lista[2], sizeof(char)*100);
-                    write(arregloPipes[2*l +1][ESCRITURA], lista[3], sizeof(char)*100);
-                    write(arregloPipes[2*l +1][ESCRITURA], lista[4], sizeof(char)*100);
-                    write(arregloPipes[2*l +1][ESCRITURA],pidHijo , sizeof(char)*100);
-                    sprintf(canalWrite,"%i",arregloPipes[2*l+1][ESCRITURA]);
-                    sprintf(canalRead,"%i",arregloPipes[2*l+1][ESCRITURA]);
-                    array = {"/bin/vis",canalWrite,canalRead,NULL};
-                    free(canalWrite);
-                    free(canalRead);
-                    free(pidHijo);
-                    printf("este dato va al disco %i\n",l+1);
+                    printf("Este dato va al disco %i\n",l+1);
                     break;
                 }
 
@@ -170,12 +158,7 @@ int main(int argc, char const *argv[]){
         fclose(archivo);
         
     }
-    else{
 
-        
-        execv("/bin/vis.c",array);
-        printf("Soy un hijito  \n");
-    }
 
 
 
