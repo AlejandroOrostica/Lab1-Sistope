@@ -51,6 +51,7 @@ float calcularRuido(float ruido){
 
 int main(int argc, char const *argv[]){
     int i=0;
+    int flag = atoi(argv[5]);
     float potencia =0.0;
     float mediaImaginaria =0.0;
     float mediaReal =0.0;
@@ -58,6 +59,7 @@ int main(int argc, char const *argv[]){
     float reales=0.0;
     float imaginarios=0.0;
     float total=0.0;
+    int disco=0;
     char* string = (char*)malloc(sizeof(char)*100);
     char fin[100] = "FIN";
     
@@ -83,14 +85,21 @@ int main(int argc, char const *argv[]){
         else if(k==2){
             
             ruido+=strtof(string,NULL);
-            k=0;
+            k++;
         }
+        else if(k==3){
+            
+            disco=atoi(string);
+            k=0;
+        }        
         total+=1.0;
         
     }
     int all = (int)total;
-    printf("SOY EL HIJO DE PID %s Y PROCESE %i VISIBILIDADES \n ",argv[3], (all-1)/atoi(argv[4]));
     
+    if(atoi(argv[5]) == 1){
+        printf("SOY EL HIJO DE PID %s, PROCESE %i VISIBILIDADES \n ",argv[3], (all-1)/atoi(argv[4]));
+    }
 
     
     
@@ -103,7 +112,21 @@ int main(int argc, char const *argv[]){
     potencia=calcularPotencia(reales,imaginarios,total);
     
 
-    printf("Los numeros son %f %f %f %f\n",mediaReal,mediaImaginaria,potencia,ruido);
+   // printf("Los numeros son %f %f %f %f\n",mediaReal,mediaImaginaria,potencia,ruido);
+    char *mR = malloc(sizeof(char)*100);
+    char *mI = malloc(sizeof(char)*100);
+    char *p = malloc(sizeof(char)*100);
+    char *r = malloc(sizeof(char)*100);
+    sprintf(mR,"%f",mediaReal);
+    sprintf(mI,"%f",mediaImaginaria);
+    sprintf(p,"%f", potencia);
+    sprintf(r,"%f",ruido);
     
+    
+    char* weaita = (char*)malloc(sizeof(char)*100);
+    write(atoi(argv[1]), mR, sizeof(char)*100);
+    write(atoi(argv[1]), mI, sizeof(char)*100);
+    write(atoi(argv[1]), p, sizeof(char)*100);
+    write(atoi(argv[1]), r, sizeof(char)*100);
     return 0;
 }

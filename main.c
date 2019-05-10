@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -5,6 +6,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <math.h>
+
 
 #define LECTURA 0
 #define ESCRITURA 1
@@ -58,12 +60,34 @@ float calcularDistancia(char** lista){
 
 
 
-int main(int argc, char const *argv[]){
-    int pid, radio, numeroDiscos, ppid;
+int main(int argc, char  *argv[]){
+    int pid, radio, numeroDiscos, ppid,opt, flag;
     float distancia;
-    
-    numeroDiscos = 3;
-    radio = 150;
+    flag = 0;
+    char* archivoEntrada = (char*)malloc(sizeof(char)*40);
+    char* archivoSalida = (char*)malloc(sizeof(char)*40);
+
+
+    while((opt = getopt(argc, argv, "i:o:n:d:b")) != -1){
+        switch(opt) {
+            case 'i':
+                strcpy(archivoEntrada,optarg);
+                break;
+            case 'o':
+                strcpy(archivoSalida,optarg);
+                break;
+            case 'n':
+                numeroDiscos = atoi(optarg);
+                break;
+            case 'd':
+                radio = atoi(optarg);
+                break;
+            case 'b':
+                flag = 1;
+                break;
+
+        }
+    }
     int* pids = (int*)malloc(sizeof(int)*numeroDiscos);
 
     int** arregloPipes = (int**)malloc(sizeof(int*)*numeroDiscos*2);
@@ -92,13 +116,14 @@ int main(int argc, char const *argv[]){
                 char *canalRead = malloc(sizeof(char)*100);
                 char *pidHijo = malloc(sizeof(char)*100);
                 char *discos = malloc(sizeof(char)*100);
+                char *bandera = malloc(sizeof(char)*100);
                 sprintf(canalWrite,"%i",arregloPipes[2*i+1][ESCRITURA]);
                 sprintf(canalRead,"%i",arregloPipes[2*i][LECTURA]);
                 sprintf(pidHijo,"%i", getpid() );
                 sprintf(discos,"%i",numeroDiscos);
-                char * array[] = {"./vis",canalWrite,canalRead,pidHijo,discos,NULL};
+                sprintf(bandera, "%i",flag);
+                char * array[] = {"./vis",canalWrite,canalRead,pidHijo,discos,bandera,NULL};
                 execv("./vis",array);
-                printf("aca llegue\n");
 
 
 
@@ -109,7 +134,7 @@ int main(int argc, char const *argv[]){
     }
     
     if(ppid == getpid()){
-        archivo = fopen("prueba.csv", "r");
+        archivo = fopen(archivoEntrada, "r");
 
         while(!feof(archivo)){
             int i=0;
@@ -138,15 +163,31 @@ int main(int argc, char const *argv[]){
                 float max= (radio*(l+1)); 
                 if(l==numeroDiscos-1){
 
-                    printf("este dato htdhva al disco %i\n",l+1);
+                    int j=2;
+                    while(j<5){
 
+                    
+                    write(arregloPipes[2*l][ESCRITURA], lista[j], sizeof(char)*100);
+                    j++;
+                    }//write(arregloPipes[2*l][ESCRITURA], lista[3] , sizeof(char)*100);
+                   // printf("Este dato va al disco %i\n",l);
+                    char *disco = malloc(sizeof(char)*100);
+                    sprintf(disco,"%i",l);
+                    write(arregloPipes[2*l][ESCRITURA], disco, sizeof(char)*100);
                     break;
                 }
                 else if(distancia<max && distancia>=min){
+                    int j=2;
+                    while(j<5){
+
                     
-                    write(arregloPipes[2*l][ESCRITURA], lista[2], sizeof(char)*100);
-                    write(arregloPipes[2*l ][ESCRITURA], lista[3] , sizeof(char)*100);
-                    printf("Este dato va al disco %i\n",l);
+                    write(arregloPipes[2*l][ESCRITURA], lista[j], sizeof(char)*100);
+                    j++;
+                    }//write(arregloPipes[2*l][ESCRITURA], lista[3] , sizeof(char)*100);
+                   // printf("Este dato va al disco %i\n",l);
+                    char *disco = malloc(sizeof(char)*100);
+                    sprintf(disco,"%i",l);
+                    write(arregloPipes[2*l][ESCRITURA], disco, sizeof(char)*100);
                     break;
                 } 
 
@@ -161,7 +202,21 @@ int main(int argc, char const *argv[]){
             strcpy(fin, "FIN");
             write(arregloPipes[i*2][ESCRITURA],fin, sizeof(char)*100 );
         }
-        printf("Soy el papi \n");
+        
+        char* mediaReal = (char*)malloc(sizeof(char)*100);
+        char* mediaImaginaria = (char*)malloc(sizeof(char)*100);
+        char* potencia = (char*)malloc(sizeof(char)*100);
+        char* ruido = (char*)malloc(sizeof(char)*100);
+        for(int i=0; i<numeroDiscos; i++){
+            read(arregloPipes[i*2 +1][LECTURA],mediaReal,sizeof(char)*100);
+            read(arregloPipes[i*2 +1][LECTURA],mediaImaginaria,sizeof(char)*100);
+            read(arregloPipes[i*2 +1][LECTURA],potencia,sizeof(char)*100);
+            read(arregloPipes[i*2 +1][LECTURA],ruido,sizeof(char)*100);
+
+            printf("DEL HIJO %d TRAJE: \nMEDIA REAL: %s\nMEDIA IMAGINARIA: %s\nPOTENCIA: %s\nRUIDO: %s \n ", i,mediaReal,mediaImaginaria,potencia,ruido);
+
+        }
+        
         
         
         fclose(archivo);
