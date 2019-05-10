@@ -96,7 +96,7 @@ int main(int argc, char const *argv[]){
                 char * array[] = {"./vis",canalWrite,canalRead,NULL};
                 execv("./vis",array);
                 printf("aca llegue\n");
-                
+                printf("asdasdasd");
 
 
 
