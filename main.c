@@ -90,13 +90,15 @@ int main(int argc, char const *argv[]){
                 pids[i] = getpid();
                 char *canalWrite = malloc(sizeof(char)*100);
                 char *canalRead = malloc(sizeof(char)*100);
+                char *pidHijo = malloc(sizeof(char)*100);
+                char *discos = malloc(sizeof(char)*100);
                 sprintf(canalWrite,"%i",arregloPipes[2*i+1][ESCRITURA]);
                 sprintf(canalRead,"%i",arregloPipes[2*i][LECTURA]);
-                
-                char * array[] = {"./vis",canalWrite,canalRead,NULL};
+                sprintf(pidHijo,"%i", getpid() );
+                sprintf(discos,"%i",numeroDiscos);
+                char * array[] = {"./vis",canalWrite,canalRead,pidHijo,discos,NULL};
                 execv("./vis",array);
                 printf("aca llegue\n");
-                printf("asdasdasd");
 
 
 
@@ -129,28 +131,35 @@ int main(int argc, char const *argv[]){
             //procesado de linea
             lista=procesarLinea(linea,lista);
             distancia = calcularDistancia(lista);
-            
+
             for(int l=0;l<numeroDiscos;l++){
+                
                 float min= radio*l;
                 float max= (radio*(l+1)); 
                 if(l==numeroDiscos-1){
-                    
-                    write(arregloPipes[2*l ][ESCRITURA], lista[2], sizeof(char)*100);
 
-                    printf("este dato va al disco %i\n",l+1);
+                    printf("este dato htdhva al disco %i\n",l+1);
 
                     break;
                 }
                 else if(distancia<max && distancia>=min){
-                    write(arregloPipes[2*l +1][ESCRITURA], lista[2], sizeof(char)*100);
-                    printf("Este dato va al disco %i\n",l+1);
+                    
+                    write(arregloPipes[2*l][ESCRITURA], lista[2], sizeof(char)*100);
+                    write(arregloPipes[2*l ][ESCRITURA], lista[3] , sizeof(char)*100);
+                    printf("Este dato va al disco %i\n",l);
                     break;
-                }
+                } 
 
             }
+            
     
     
 
+        }
+        for(int i=0; i<numeroDiscos; i++){
+            char* fin = (char*)malloc(sizeof(char)*100);
+            strcpy(fin, "FIN");
+            write(arregloPipes[i*2][ESCRITURA],fin, sizeof(char)*100 );
         }
         printf("Soy el papi \n");
         
