@@ -10,20 +10,32 @@
 
 #define LECTURA 0
 #define ESCRITURA 1
-void crearSalida(){
+void crearSalida(char* nombreArchivo, int hijo,char* mediaReal,char* mediaImaginaria,char*potencia, char* ruido){
     FILE* salida;
-    salida = fopen("propiedades.txt", "w");
-    for(int i=0;i<5;i++){
-        char cadena1[] = "Disco :\n";
-        fwrite( cadena1, sizeof(char), strlen(cadena1), salida );
-        char cadena2[] = "Media Real:\n";
-        fwrite( cadena2, sizeof(char), strlen(cadena2), salida );
-        char cadena3[] = "Media Imaginaria:\n";
-        fwrite( cadena3, sizeof(char), strlen(cadena3), salida );
-        char cadena4[] = "Ruido Total:\n";
-        fwrite( cadena4, sizeof(char), strlen(cadena4), salida );
-    }
+    salida = fopen(nombreArchivo, "a");
 
+    char* numeroDisco = (char*) malloc(sizeof(char)*5);
+    sprintf(numeroDisco, "%i", hijo+1);
+    strcat(numeroDisco, ":\n");
+
+    char cadena1[100] = "\nDisco ";
+    strcat(cadena1,numeroDisco );
+    fwrite( cadena1, sizeof(char), strlen(cadena1), salida );
+    char cadena2[] = "Media Real:";
+    fwrite( cadena2, sizeof(char), strlen(cadena2), salida );
+    fwrite( mediaReal, sizeof(char), strlen(mediaReal), salida );
+    char cadena3[] = "\nMedia Imaginaria:";
+    fwrite( cadena3, sizeof(char), strlen(cadena3), salida );
+    fwrite( mediaImaginaria, sizeof(char), strlen(mediaImaginaria), salida );
+    char cadena4[] = "\nPotencia Total:";
+    fwrite( cadena4, sizeof(char), strlen(cadena4), salida );
+    fwrite( potencia, sizeof(char), strlen(potencia), salida );
+
+    char cadena5[] = "\nRuido Total:";
+    fwrite( cadena5, sizeof(char), strlen(cadena5), salida );
+    fwrite( ruido, sizeof(char), strlen(ruido), salida );
+    char cadena6[] = "\n";
+    fwrite(cadena6, sizeof(char),strlen(cadena6), salida);
 
 
 
@@ -88,6 +100,10 @@ int main(int argc, char  *argv[]){
 
         }
     }
+
+    FILE* archivoS;
+    archivoS = fopen(archivoSalida,"w");
+    fclose(archivoS);
     int* pids = (int*)malloc(sizeof(int)*numeroDiscos);
 
     int** arregloPipes = (int**)malloc(sizeof(int*)*numeroDiscos*2);
@@ -212,6 +228,7 @@ int main(int argc, char  *argv[]){
             read(arregloPipes[i*2 +1][LECTURA],mediaImaginaria,sizeof(char)*100);
             read(arregloPipes[i*2 +1][LECTURA],potencia,sizeof(char)*100);
             read(arregloPipes[i*2 +1][LECTURA],ruido,sizeof(char)*100);
+            crearSalida(archivoSalida, i, mediaReal,mediaImaginaria,potencia,ruido);
 
             printf("DEL HIJO %d TRAJE: \nMEDIA REAL: %s\nMEDIA IMAGINARIA: %s\nPOTENCIA: %s\nRUIDO: %s \n ", i,mediaReal,mediaImaginaria,potencia,ruido);
 

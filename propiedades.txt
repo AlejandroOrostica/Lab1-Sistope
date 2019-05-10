@@ -18,3 +18,19 @@ Disco :
 Media Real:
 Media Imaginaria:
 Ruido Total:
+Disco 0:
+Media Real:
+0.025931Media Imaginaria:
+0.001565Potencia Total:
+0.129891Ruido Total:
+0.004363Disco 1:
+Media Real:
+0.000000Media Imaginaria:
+0.000000Potencia Total:
+0.000000Ruido Total:
+0.000000Disco 2:
+Media Real:
+-0.004580Media Imaginaria:
+-0.000134Potencia Total:
+0.096221Ruido Total:
+0.024731

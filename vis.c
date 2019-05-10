@@ -123,7 +123,6 @@ int main(int argc, char const *argv[]){
     sprintf(r,"%f",ruido);
     
     
-    char* weaita = (char*)malloc(sizeof(char)*100);
     write(atoi(argv[1]), mR, sizeof(char)*100);
     write(atoi(argv[1]), mI, sizeof(char)*100);
     write(atoi(argv[1]), p, sizeof(char)*100);
